@@ -1,0 +1,32 @@
+<div class="flex flex-row w-full content-center justify-center p-4">
+    <form phx-change="search">
+        <input type="text" name="search_text"
+               placeholder="search truck names and menus" size="70"
+               phx-debounce="220">
+    </form>
+</div>
+
+<div class="grid grid-cols-9 m-4 border border-gray-200">
+
+    <div class="font-bold border border-gray-200 bg-yellow-50 p-2 col-span-2">
+        TRUCK
+    </div>
+    <div class="font-bold border border-gray-200 bg-yellow-50 p-2 col-span-5">
+        MENU
+    </div>
+    <div class="font-bold border border-gray-200 bg-yellow-50 p-2 col-span-2">
+        ADDRESS
+    </div>
+
+    <%= for row <- @csv do %>
+        <%= if @search do %>
+            <%= if String.match?(Enum.at(row,0), @search_text) ||
+                String.match?(Enum.at(row,1), @search_text) do %>
+                <%= live_component FoodtruckWeb.RowComponent, row: row %>
+            <% end %>
+        <% else %>
+            <%= live_component FoodtruckWeb.RowComponent, row: row %>
+        <% end %>
+    <% end %>
+
+</div>
