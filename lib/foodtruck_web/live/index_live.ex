@@ -28,8 +28,14 @@ defmodule FoodtruckWeb.IndexLive do
 
   @impl true
   def handle_event("search", %{"search_text" => search_text}, socket) do
-    {:noreply,
-     assign(socket, search: true, search_text: Regex.compile!(search_text, [:caseless]))}
+    case String.length(search_text) do
+      n when n in [0, 1] ->
+        {:noreply, assign(socket, search: false)}
+
+      _ ->
+        {:noreply,
+         assign(socket, search: true, search_text: Regex.compile!(search_text, [:caseless]))}
+    end
   end
 
   def get_column_index(columns, column_name) when is_binary(column_name) do
