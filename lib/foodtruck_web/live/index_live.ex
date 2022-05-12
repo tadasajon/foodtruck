@@ -9,10 +9,9 @@ defmodule FoodtruckWeb.IndexLive do
 
     [csv_header | csv_body] = CSV.parse_string(body, skip_headers: false)
 
-    headers_with_ndx = Enum.with_index(csv_header)
-    location_ndx = get_column_index(headers_with_ndx, "LocationDescription")
-    truckname_ndx = get_column_index(headers_with_ndx, "Applicant")
-    menu_ndx = get_column_index(headers_with_ndx, "FoodItems")
+    location_ndx = Enum.find_index(csv_header, fn header -> header == "LocationDescription" end)
+    truckname_ndx = Enum.find_index(csv_header, fn header -> header == "Applicant" end)
+    menu_ndx = Enum.find_index(csv_header, fn header -> header == "FoodItems" end)
 
     csv_body =
       Enum.map(csv_body, fn row ->
@@ -36,12 +35,5 @@ defmodule FoodtruckWeb.IndexLive do
         {:noreply,
          assign(socket, search: true, search_text: Regex.compile!(search_text, [:caseless]))}
     end
-  end
-
-  def get_column_index(columns, column_name) when is_binary(column_name) do
-    columns
-    |> Enum.filter(fn {col_name, _} -> col_name == column_name end)
-    |> hd
-    |> Kernel.elem(1)
   end
 end
